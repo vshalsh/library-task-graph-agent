@@ -22,35 +22,20 @@ The first version will focus on a small, verifiable workflow:
 
 - Read structured Markdown or JSON work items stored in a project folder.
 - Represent `Objective`, `Milestone`, `Task`, and `Artifact` nodes.
-- Support `depends_on`, `blocks`, and `clarified_by` relationships. Treat `blocks` as the inverse of `depends_on` where possible.
+- Support `depends_on`, `blocks`, and `clarified_by` relationships.
 - Validate the graph and report dependency cycles with a useful explanation.
 - Calculate topological order, ready tasks, blocked tasks, and a duration-based critical path when estimates are available.
-- Rank today's ready tasks using urgency, impact, and evidence-backed constraints.
+- Rank today's ready tasks using priority and due date, with evidence shown for the recommendation.
 - Generate a Markdown daily brief with task status, rationale, source evidence, blockers, and the next concrete action.
 - Draft suggested follow-up messages for blockers; never send them automatically.
 
 The MVP starts with files in the repository so it can run locally without external credentials. Slack, external document stores, ChatGPT Library access, live PR monitoring, and model-based extraction are separate adapters for later iterations. The data-source boundary should make these integrations possible without making the core graph depend on them.
 
-## Initial graph model
+## Day 1: graph contract and fixtures
 
-### Node types
-
-| Type | Purpose |
-| --- | --- |
-| `Objective` | Outcome the work is intended to achieve |
-| `Milestone` | Verifiable checkpoint toward an objective |
-| `Task` | Action that can be assigned, estimated, and completed |
-| `Artifact` | Evidence or deliverable such as a note, specification, or code change |
-
-### Relationships
-
-| Edge | Meaning |
-| --- | --- |
-| `depends_on` | The source node must be resolved before the target can proceed |
-| `blocks` | The source node prevents progress on the target |
-| `clarified_by` | An artifact or decision provides context for another node |
-
-Each extracted or imported fact should retain provenance: source, location or link, capture time, and confidence when available. A recommendation without enough evidence should be labeled as inferred or unconfirmed.
+- [Graph contract](docs/graph-contract.md): node and edge semantics, readiness rules, evidence, and critical-path behavior.
+- [JSON Schema](schema/task-graph.schema.json): versioned input validation contract.
+- [JSON example](examples/sample-task-graph.json) and [Markdown example](examples/sample-notes.md): equivalent fictional fixture with expected ready and blocked tasks.
 
 ## Daily output
 
@@ -84,4 +69,4 @@ The daily brief should answer:
 
 ## Status
 
-The repository currently contains the project brief and initial README. The MVP implementation has not started.
+**Day 1 complete:** MVP boundaries, the v1 graph contract, the JSON Schema, and equivalent Markdown/JSON fixtures are in place. The implementation work begins on Day 2.
