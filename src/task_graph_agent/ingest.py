@@ -49,6 +49,12 @@ _UniqueKeyLoader.add_constructor(
     _UniqueKeyLoader.construct_mapping,
 )
 
+# Keep ISO dates as strings, matching the JSON contract and its date fields.
+_UniqueKeyLoader.add_constructor(
+    "tag:yaml.org,2002:timestamp",
+    lambda loader, node: loader.construct_scalar(node),
+)
+
 
 @dataclass(frozen=True)
 class SourceProvenance:
