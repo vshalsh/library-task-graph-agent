@@ -40,6 +40,16 @@ class IngestTests(unittest.TestCase):
             self.assertEqual(loaded.provenance.content_start_line, 4)
             self.assertEqual(loaded.provenance.content_end_line, 5)
 
+    def test_keeps_yaml_dates_as_json_compatible_strings(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = self.write(
+                Path(tmp),
+                "notes.md",
+                "```task-graph\nschema_version: '1.0'\ndue_date: 2026-10-17\n```\n",
+            )
+            loaded = load_graph(path)
+            self.assertEqual(loaded.document["due_date"], "2026-10-17")
+
     def test_rejects_missing_or_repeated_markdown_blocks(self) -> None:
         for content, count in [("# none\n", 0), ("```task-graph\na: 1\n```\n```task-graph\nb: 2\n```", 2)]:
             with self.subTest(count=count), tempfile.TemporaryDirectory() as tmp:
