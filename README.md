@@ -37,6 +37,20 @@ The MVP starts with files in the repository so it can run locally without extern
 - [JSON Schema](schema/task-graph.schema.json): versioned input validation contract.
 - [JSON example](examples/sample-task-graph.json) and [Markdown example](examples/sample-notes.md): equivalent fictional fixture with expected ready and blocked tasks.
 
+## Day 2: input ingestion and provenance
+
+`src/task_graph_agent/ingest.py` loads UTF-8 JSON files and Markdown files with exactly one fenced `task-graph` YAML block. The result keeps the decoded document separate from immutable source provenance: input path, format, SHA-256, byte size, and (for Markdown) the YAML block's source line range. Markdown parsing uses safe YAML loading and rejects duplicate keys. This stage decodes inputs; graph semantics and dependency validation remain later work.
+
+Install the package with `python -m pip install -e .`, then load an input with:
+
+```python
+from task_graph_agent import load_graph
+
+loaded = load_graph("examples/sample-notes.md")
+print(loaded.document)
+print(loaded.provenance.sha256)
+```
+
 ## Daily output
 
 The daily brief should answer:
@@ -69,4 +83,6 @@ The daily brief should answer:
 
 ## Status
 
-**Day 1 complete:** MVP boundaries, the v1 graph contract, the JSON Schema, and equivalent Markdown/JSON fixtures are in place. The implementation work begins on Day 2.
+**Day 1 complete:** MVP boundaries, the v1 graph contract, the JSON Schema, and equivalent Markdown/JSON fixtures are in place.
+
+**Day 2 complete:** JSON and Markdown YAML ingestion now preserves source-level provenance. The deterministic graph engine begins on Day 3.
