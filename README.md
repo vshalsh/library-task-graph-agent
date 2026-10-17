@@ -98,4 +98,6 @@ The daily brief should answer:
 
 **Day 1 complete:** MVP boundaries, the v1 graph contract, the JSON Schema, and equivalent Markdown/JSON fixtures are in place.
 
-**Day 2 complete:** JSON and Markdown YAML ingestion now preserves source-level provenance. Graph contract validation, dependency-cycle detection, and deterministic topological ordering are in place.
+**Day 2 complete:** JSON and Markdown YAML ingestion now preserves source-level provenance. The deterministic graph engine begins on Day 3.
+
+**Day 3 complete:** Graph contract validation, dependency-cycle detection, and deterministic topological ordering are in place.
