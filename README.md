@@ -51,6 +51,19 @@ print(loaded.document)
 print(loaded.provenance.sha256)
 ```
 
+## Day 3: graph validation and ordering
+
+`src/task_graph_agent/graph.py` validates the v1 document contract and returns all findings with JSON-style input paths. It rejects duplicate IDs or edges, missing references, self-edges, invalid fields, and dependency cycles (including a closed cycle path). `topological_sort()` returns a deterministic prerequisite-first order: `depends_on` is normalized from dependent-to-prerequisite, `blocks` from blocker-to-blocked, and `clarified_by` is excluded from dependency ordering.
+
+```python
+from task_graph_agent import load_graph, topological_sort, validate_graph
+
+graph = load_graph("examples/sample-task-graph.json").document
+issues = validate_graph(graph)
+if not issues:
+    print(topological_sort(graph))
+```
+
 ## Daily output
 
 The daily brief should answer:
@@ -85,4 +98,4 @@ The daily brief should answer:
 
 **Day 1 complete:** MVP boundaries, the v1 graph contract, the JSON Schema, and equivalent Markdown/JSON fixtures are in place.
 
-**Day 2 complete:** JSON and Markdown YAML ingestion now preserves source-level provenance. The deterministic graph engine begins on Day 3.
+**Day 2 complete:** JSON and Markdown YAML ingestion now preserves source-level provenance. Graph contract validation, dependency-cycle detection, and deterministic topological ordering are in place.
