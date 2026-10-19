@@ -59,6 +59,9 @@ A task's reported status is not changed merely because an artifact exists. The e
 4. Daily ranking initially sorts ready tasks by priority, then due date (earliest first, when present). Any later scoring model must expose its factors and retain the deterministic tie-breaker of task ID.
 5. `clarified_by` evidence can explain a task or decision but cannot make a dependency ready.
 
+The Day 4 analyzer exposes these rules through `analyze_graph(document)`. It preserves source statuses, returns all unresolved transitive prerequisite task IDs, and includes nearest blocker chains. It normalizes `blocks` to the same dependent-to-prerequisite traversal used for `depends_on`. Critical-path output includes the node chain and estimated minutes; when any task estimate is missing, exact duration is withheld and the missing task IDs are reported.
+
+
 ## Markdown input format
 
 A Markdown input file contains exactly one fenced `task-graph` block whose body is YAML with the same keys and meaning as the JSON document. Ordinary prose outside the block is context for humans and is not parsed in v1. The parser must reject a missing or repeated block and report line numbers for malformed YAML.

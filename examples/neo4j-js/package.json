@@ -1,0 +1,14 @@
+{
+  "name": "task-graph-neo4j-js-example",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "import": "node src/import-graph.mjs",
+    "readiness": "node src/show-readiness.mjs"
+  },
+  "dependencies": {
+    "neo4j-driver": "^6.0.0"
+  }
+}
+

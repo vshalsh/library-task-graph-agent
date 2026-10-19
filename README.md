@@ -64,6 +64,19 @@ if not issues:
     print(topological_sort(graph))
 ```
 
+## Day 4: readiness, blockers, and critical path
+
+The new deterministic analyzer derives task states without changing reported statuses. It normalizes both dependency edge forms, lists all unresolved transitive prerequisites, shows nearest blocker chains, and computes an estimate-weighted critical path. Missing estimates are surfaced instead of guessed. See the [Day 4 analysis notes](docs/critical-path.md).
+
+```python
+from task_graph_agent import analyze_graph, load_graph
+
+graph = load_graph("examples/sample-task-graph.json").document
+print(analyze_graph(graph).as_dict())
+```
+
+A portable [Neo4j JavaScript adapter example](examples/neo4j-js/README.md) imports the same JSON contract and queries readiness. Copy that folder into another Node.js repository when you need a Neo4j-backed view.
+
 ## Daily output
 
 The daily brief should answer:
@@ -101,3 +114,5 @@ The daily brief should answer:
 **Day 2 complete:** JSON and Markdown YAML ingestion now preserves source-level provenance. The deterministic graph engine begins on Day 3.
 
 **Day 3 complete:** Graph contract validation, dependency-cycle detection, and deterministic topological ordering are in place.
+
+**Day 4 complete:** Deterministic readiness, blocker chains, and estimate-aware critical-path analysis are available through `analyze_graph()`. The standalone Neo4j JavaScript example can be reused without adding a database dependency to the Python core.
