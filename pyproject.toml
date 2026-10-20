@@ -11,3 +11,6 @@ dependencies = ["PyYAML>=6.0,<7"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[project.scripts]
+task-graph = "task_graph_agent.cli:main"

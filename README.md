@@ -77,6 +77,14 @@ print(analyze_graph(graph).as_dict())
 
 A portable [Neo4j JavaScript adapter example](examples/neo4j-js/README.md) imports the same JSON contract and queries readiness. Copy that folder into another Node.js repository when you need a Neo4j-backed view.
 
+## Day 6: tests and local CLI
+
+Use `task-graph validate INPUT` or `task-graph analyze INPUT` after installing
+with `python -m pip install -e .`. See [local workflow](docs/local-workflow.md)
+for commands, exit codes, fixtures, and verification. Day 6 adds CLI integration
+tests and invalid-input samples. Day 5 ranking and Markdown brief generation
+are still pending in this repository; Day 7 release work has not started.
+
 ## Daily output
 
 The daily brief should answer:
