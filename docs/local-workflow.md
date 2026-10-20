@@ -38,3 +38,17 @@ Day 6 adds the CLI and integration coverage for the existing Day 1–4 core.
 Day 5 ranking and Markdown daily-brief generation are absent from the current
 repository and remain pending. This CLI does not claim to generate daily briefs.
 Day 7 release polish has not been performed.
+
+## Verified results — 20 October 2026
+
+The Day 6 implementation was verified with:
+
+- `python -m unittest discover -s tests -v`: 26 tests passed, including seven CLI integration tests.
+- Editable package installation: succeeded.
+- Installed `task-graph analyze examples/sample-task-graph.json`: exited 0.
+- Sample analysis: T-01 done, T-02 ready, T-03 blocked by T-02; critical path 270 minutes.
+- Failure coverage: dependency cycle, missing reference, missing input file, and invalid command.
+- JSON/Markdown analysis equivalence, source SHA-256, and unchanged source bytes: checked by integration tests.
+
+Implementation: [Day 6 commit](https://github.com/vshalsh/library-task-graph-agent/commit/6d0a8702a6cfadb1a434dd85f4c9aabd7572233d).
+These are local verification results, not a GitHub Actions CI run.
