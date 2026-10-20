@@ -85,9 +85,9 @@ for commands, exit codes, fixtures, and verification. Day 6 adds CLI integration
 tests and invalid-input samples. Day 5 ranking and Markdown brief generation
 are still pending in this repository; Day 7 release work has not started.
 
-## Daily output
+## Planned daily brief (Day 5 pending)
 
-The daily brief should answer:
+The daily brief is not implemented yet. When added, it should answer:
 
 - What are the highest-priority tasks that are ready to start?
 - Which tasks are blocked, and by what?
@@ -97,15 +97,15 @@ The daily brief should answer:
 
 ## One-week build plan
 
-| Day | Deliverable |
-| --- | --- |
-| 1 | Agree on MVP boundaries, node schema, and sample project data |
-| 2 | Implement Markdown/JSON ingestion and provenance |
-| 3 | Add graph validation, cycle detection, and topological ordering |
-| 4 | Calculate readiness, blockers, and critical path |
-| 5 | Rank daily focus and generate the Markdown brief |
-| 6 | Add tests, sample data, and a local CLI workflow |
-| 7 | Polish documentation, add a runnable demo, and prepare the public release |
+| Day | Deliverable | Status |
+| --- | --- | --- |
+| 1 | Agree on MVP boundaries, node schema, and sample project data | Complete |
+| 2 | Implement Markdown/JSON ingestion and provenance | Complete |
+| 3 | Add graph validation, cycle detection, and topological ordering | Complete |
+| 4 | Calculate readiness, blockers, and critical path | Complete |
+| 5 | Rank daily focus and generate the Markdown brief | Pending |
+| 6 | Add tests, sample data, and a local CLI workflow | Complete |
+| 7 | Polish documentation, add a runnable demo, and prepare the public release | Awaiting approval |
 
 ## Principles
 
@@ -124,3 +124,9 @@ The daily brief should answer:
 **Day 3 complete:** Graph contract validation, dependency-cycle detection, and deterministic topological ordering are in place.
 
 **Day 4 complete:** Deterministic readiness, blocker chains, and estimate-aware critical-path analysis are available through `analyze_graph()`. The standalone Neo4j JavaScript example can be reused without adding a database dependency to the Python core.
+
+**Day 5 pending:** Daily-focus ranking and Markdown brief generation have not been implemented.
+
+**Day 6 complete:** Local validation and analysis CLI, two invalid-input fixtures, and seven CLI integration tests are available. All 26 tests passed on 20 October 2026; the installed `task-graph analyze` command also ran successfully. See [local workflow](docs/local-workflow.md).
+
+**Day 7 awaiting approval:** Release documentation, runnable demo, and release preparation remain scheduled work. The full one-week MVP is not yet complete.
