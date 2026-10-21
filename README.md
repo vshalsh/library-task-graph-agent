@@ -1,153 +1,85 @@
 # Library Task Graph Agent
 
-Validate structured work notes and show task readiness, blockers, and critical paths.
+Turn structured project notes into an evidence-aware daily task brief.
 
-Current state: graph-core preview. Days 1–4, 6, and 7 are complete; Day 5
-daily ranking and Markdown brief generation remain pending.
+The one-week core MVP is implemented: Markdown/JSON ingestion, graph validation,
+readiness and blocker analysis, critical paths, ranked daily focus, and a
+Markdown daily brief. The engine runs locally without a model key.
 
 ## Quick start
 
-Requires Python 3.10+. From the repository root, create and activate a virtual
-environment, then run:
+Requires Python 3.10+. From the repository root:
 
 ```sh
+python -m venv .venv
+. .venv/bin/activate
 python -m pip install -e .
+task-graph brief examples/sample-task-graph.json --date 2026-10-21
 python examples/demo.py
-task-graph validate examples/sample-notes.md
-task-graph analyze examples/sample-task-graph.json
 python -m unittest discover -s tests -v
 ```
 
-The [demo guide](docs/demo.md) explains the fictional blocker-to-ready transition.
-See [local setup](docs/local-workflow.md), [release notes](CHANGELOG.md), and
-[contribution guidance](CONTRIBUTING.md). A full MVP release is pending Day 5
-and a repository license decision.
+On Windows PowerShell activate with `.venv\Scripts\Activate.ps1`.
+If the script is unavailable on PATH, use `python -m task_graph_agent`.
 
-Traditional backlogs store tasks as rows. Real engineering work has dependencies, blockers, decisions, and artifacts spread across notes, docs, pull requests, and conversations. This project models those relationships as a directed acyclic graph (DAG) so it can show what is ready, what is blocked, and what should happen next.
+## Commands
 
-## Product vision
-
-The long-term direction is a daily task graph engine that can:
-
-1. Ingest work notes, meeting takeaways, architecture documents, and repository activity.
-2. Separate context from commitments, constraints, and decisions.
-3. Connect objectives, milestones, tasks, and artifacts with explicit relationships.
-4. Recalculate readiness, blockers, and critical paths as evidence changes.
-5. Produce a ranked daily focus list and draft useful follow-up questions or updates.
-
-The agent should explain why it recommends a task and show the evidence behind its status. It must not silently invent progress or send messages on the user's behalf.
-
-## One-week MVP
-
-The first version will focus on a small, verifiable workflow:
-
-- Read structured Markdown or JSON work items stored in a project folder.
-- Represent `Objective`, `Milestone`, `Task`, and `Artifact` nodes.
-- Support `depends_on`, `blocks`, and `clarified_by` relationships.
-- Validate the graph and report dependency cycles with a useful explanation.
-- Calculate topological order, ready tasks, blocked tasks, and a duration-based critical path when estimates are available.
-- Rank today's ready tasks using priority and due date, with evidence shown for the recommendation.
-- Generate a Markdown daily brief with task status, rationale, source evidence, blockers, and the next concrete action.
-- Draft suggested follow-up messages for blockers; never send them automatically.
-
-The MVP starts with files in the repository so it can run locally without external credentials. Slack, external document stores, ChatGPT Library access, live PR monitoring, and model-based extraction are separate adapters for later iterations. The data-source boundary should make these integrations possible without making the core graph depend on them.
-
-## Day 1: graph contract and fixtures
-
-- [Graph contract](docs/graph-contract.md): node and edge semantics, readiness rules, evidence, and critical-path behavior.
-- [JSON Schema](schema/task-graph.schema.json): versioned input validation contract.
-- [JSON example](examples/sample-task-graph.json) and [Markdown example](examples/sample-notes.md): equivalent fictional fixture with expected ready and blocked tasks.
-
-## Day 2: input ingestion and provenance
-
-`src/task_graph_agent/ingest.py` loads UTF-8 JSON files and Markdown files with exactly one fenced `task-graph` YAML block. The result keeps the decoded document separate from immutable source provenance: input path, format, SHA-256, byte size, and (for Markdown) the YAML block's source line range. Markdown parsing uses safe YAML loading and rejects duplicate keys. This stage decodes inputs; graph semantics and dependency validation remain later work.
-
-Install the package with `python -m pip install -e .`, then load an input with:
-
-```python
-from task_graph_agent import load_graph
-
-loaded = load_graph("examples/sample-notes.md")
-print(loaded.document)
-print(loaded.provenance.sha256)
+```sh
+task-graph validate examples/sample-notes.md
+task-graph analyze examples/sample-task-graph.json
+task-graph brief examples/sample-notes.md --date 2026-10-21
+task-graph brief current.json --previous previous.json --date 2026-10-21
 ```
 
-## Day 3: graph validation and ordering
+Validation and analysis emit JSON; brief emits Markdown. Commands read input
+files and print output. Save a brief with your shell's redirection to a new file.
 
-`src/task_graph_agent/graph.py` validates the v1 document contract and returns all findings with JSON-style input paths. It rejects duplicate IDs or edges, missing references, self-edges, invalid fields, and dependency cycles (including a closed cycle path). `topological_sort()` returns a deterministic prerequisite-first order: `depends_on` is normalized from dependent-to-prerequisite, `blocks` from blocker-to-blocked, and `clarified_by` is excluded from dependency ordering.
+The brief ranks ready tasks by priority (1 highest), earliest due date, and ID.
+Undated tasks follow dated tasks within the same priority. In-progress work,
+blocked, done, and deferred tasks are shown separately in the status section.
+Every task includes supplied evidence or an explicit missing-evidence note.
+Blockers include chains and suggested follow-up drafts for human review.
 
-```python
-from task_graph_agent import load_graph, topological_sort, validate_graph
+Use `--previous` to compare reported task statuses across snapshots from the
+same project. Without it, changes are explicitly unknown. Task additions and
+removals are reported; removal never implies completion.
+The default brief date uses the project's timezone (UTC if absent);
+`--date` makes runs reproducible.
 
-graph = load_graph("examples/sample-task-graph.json").document
-issues = validate_graph(graph)
-if not issues:
-    print(topological_sort(graph))
-```
+## Learn and extend
 
-## Day 4: readiness, blockers, and critical path
+- [Graph contract](docs/graph-contract.md) and [JSON Schema](schema/task-graph.schema.json)
+- [Local workflow](docs/local-workflow.md) and [daily brief behavior](docs/daily-brief.md)
+- [Runnable demo](docs/demo.md) and [sample brief](examples/sample-daily-brief.md)
+- [Critical path semantics](docs/critical-path.md)
+- [Portable Neo4j JavaScript example](examples/neo4j-js/README.md)
+- [Contribution guide](CONTRIBUTING.md) and [change log](CHANGELOG.md)
 
-The new deterministic analyzer derives task states without changing reported statuses. It normalizes both dependency edge forms, lists all unresolved transitive prerequisites, shows nearest blocker chains, and computes an estimate-weighted critical path. Missing estimates are surfaced instead of guessed. See the [Day 4 analysis notes](docs/critical-path.md).
-
-```python
-from task_graph_agent import analyze_graph, load_graph
-
-graph = load_graph("examples/sample-task-graph.json").document
-print(analyze_graph(graph).as_dict())
-```
-
-A portable [Neo4j JavaScript adapter example](examples/neo4j-js/README.md) imports the same JSON contract and queries readiness. Copy that folder into another Node.js repository when you need a Neo4j-backed view.
-
-## Day 6: tests and local CLI
-
-Use `task-graph validate INPUT` or `task-graph analyze INPUT` after installing
-with `python -m pip install -e .`. See [local workflow](docs/local-workflow.md)
-for commands, exit codes, fixtures, and verification. Day 6 adds CLI integration
-tests and invalid-input samples. Day 5 ranking and Markdown brief generation
-are still pending in this repository. Day 7 preview documentation and the runnable demo are complete.
-
-## Planned daily brief (Day 5 pending)
-
-The daily brief is not implemented yet. When added, it should answer:
-
-- What are the highest-priority tasks that are ready to start?
-- Which tasks are blocked, and by what?
-- What dependency chain determines the critical path?
-- What is the next concrete action for each priority?
-- Which statuses changed, and what source evidence supports the change?
-
-## One-week build plan
+## Sprint delivery
 
 | Day | Deliverable | Status |
 | --- | --- | --- |
-| 1 | Agree on MVP boundaries, node schema, and sample project data | Complete |
-| 2 | Implement Markdown/JSON ingestion and provenance | Complete |
-| 3 | Add graph validation, cycle detection, and topological ordering | Complete |
-| 4 | Calculate readiness, blockers, and critical path | Complete |
-| 5 | Rank daily focus and generate the Markdown brief | Pending |
-| 6 | Add tests, sample data, and a local CLI workflow | Complete |
-| 7 | Polish documentation, add a runnable demo, and prepare the public release | Complete: preview prepared |
+| 1 | Graph contract, schema, equivalent fictional fixtures | Complete |
+| 2 | JSON/Markdown ingestion and source provenance | Complete |
+| 3 | Validation, cycles, deterministic ordering | Complete |
+| 4 | Readiness, blockers, critical paths | Complete |
+| 5 | Daily ranking and Markdown brief | Complete |
+| 6 | Tests, failure fixtures, local CLI | Complete |
+| 7 | Documentation, runnable demo, release preparation | Complete |
 
-## Principles
+Verified on 21 October 2026: 32 tests pass and the installed package generates
+briefs. See [daily brief documentation](docs/daily-brief.md) for details.
 
-- **Evidence before status:** retain source references and show the basis for conclusions.
-- **Deterministic core:** graph validation and ordering must be testable without an LLM.
-- **Human control:** propose updates and messages; do not send or mark work complete automatically.
-- **Incremental integrations:** keep source adapters separate from the graph engine.
-- **Honest uncertainty:** distinguish observed facts from model-generated interpretation.
+## Boundaries
 
-## Status
+Inputs contain explicit tasks in JSON or one fenced `task-graph` YAML block.
+General prose is not automatically extracted. Live Library, Slack, PR monitoring,
+and model adapters are future integrations. Draft messages are never sent, and
+reported statuses are never automatically changed.
 
-**Day 1 complete:** MVP boundaries, the v1 graph contract, the JSON Schema, and equivalent Markdown/JSON fixtures are in place.
-
-**Day 2 complete:** JSON and Markdown YAML ingestion now preserves source-level provenance. The deterministic graph engine begins on Day 3.
-
-**Day 3 complete:** Graph contract validation, dependency-cycle detection, and deterministic topological ordering are in place.
-
-**Day 4 complete:** Deterministic readiness, blocker chains, and estimate-aware critical-path analysis are available through `analyze_graph()`. The standalone Neo4j JavaScript example can be reused without adding a database dependency to the Python core.
-
-**Day 5 pending:** Daily-focus ranking and Markdown brief generation have not been implemented.
-
-**Day 6 complete:** Local validation and analysis CLI, two invalid-input fixtures, and seven CLI integration tests are available. All 26 tests passed on 20 October 2026; the installed `task-graph analyze` command also ran successfully. See [local workflow](docs/local-workflow.md).
-
-**Day 7 complete:** Quick start, contributor guidance, release notes, and a runnable in-memory demo are available. A graph-core preview is prepared; the full MVP release remains pending Day 5 and a repository license decision.
+Critical paths include completed estimates; they are not remaining-time
+forecasts. Missing estimates are reported rather than guessed.
+Evidence is supplied by the source and is not independently verified.
+The repository has no license yet; a reusable open-source release still needs
+a license decision. The AGPL selection for DeeDee CRM applies to that separate
+repository.

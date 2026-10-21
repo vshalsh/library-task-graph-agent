@@ -34,10 +34,10 @@ equivalent; integration tests check both and verify source hashing.
 
 ## Sprint status
 
-Day 6 adds the CLI and integration coverage for the existing Day 1–4 core.
-Day 5 ranking and Markdown daily-brief generation are absent from the current
-repository and remain pending. This CLI does not claim to generate daily briefs.
-Day 7 documentation and preview preparation are complete. See the [runnable demo](demo.md) and [release notes](../CHANGELOG.md). A full release remains pending Day 5 and a repository license decision.
+All seven core MVP deliverables are implemented. Daily ranking and Markdown
+brief generation are available through `task-graph brief INPUT`.
+See [daily brief behavior](daily-brief.md) for snapshot comparisons and dates.
+A repository license decision remains before a reusable open-source release.
 
 ## Verified results — 20 October 2026
 
@@ -59,3 +59,9 @@ All 26 tests passed again. Editable package installation succeeded, and
 `python examples/demo.py` exited 0 using the installed package. It showed
 T-03 changing from blocked to ready after an in-memory T-02 completion.
 These checks ran locally; no CI run or public release tag is claimed.
+
+## Complete MVP verification — 21 October 2026
+
+All 32 tests pass, including six Day 5 test cases. The installed CLI generates
+a Markdown brief with ranked focus, evidence, blocker chains, draft follow-ups,
+and source provenance. Run `task-graph brief examples/sample-task-graph.json --date 2026-10-21`.

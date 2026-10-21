@@ -27,5 +27,6 @@ on the input and checkout location.
 To explore your own data, use `task-graph validate PATH` and
 `task-graph analyze PATH`; see [the graph contract](graph-contract.md).
 The simulation is educational and does not represent observed project progress.
-Daily ranking, Markdown briefs, automatic source monitoring, and external
-Library ingestion remain future work.
+The demo also prints a source-backed Markdown brief for the original fixture.
+Daily ranking and briefs are implemented; automatic source monitoring and external
+Library ingestion remain future integrations.

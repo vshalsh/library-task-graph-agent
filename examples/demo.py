@@ -3,7 +3,7 @@ from copy import deepcopy
 from pathlib import Path
 import json
 
-from task_graph_agent import analyze_graph, load_graph
+from task_graph_agent import analyze_graph, load_graph, render_daily_brief
 
 SOURCE = Path(__file__).resolve().parent / "sample-task-graph.json"
 
@@ -26,6 +26,10 @@ def main():
         "source_sha256": loaded.provenance.sha256,
         "input_modified": False,
     }, indent=2))
+    print()
+    from datetime import date
+    print(render_daily_brief(loaded, as_of=date(2026, 10, 21)))
+    # The simulation above is separate from the source-backed brief.
 
 
 if __name__ == "__main__":

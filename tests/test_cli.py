@@ -61,7 +61,7 @@ class CliTests(unittest.TestCase):
         self.assertNotIn("Traceback", result.stderr)
 
     def test_invalid_command(self):
-        self.assertEqual(self.run_cli("brief", "examples/sample-task-graph.json").returncode, 2)
+        self.assertEqual(self.run_cli("unknown", "examples/sample-task-graph.json").returncode, 2)
 
 
 if __name__ == "__main__":

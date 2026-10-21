@@ -1,30 +1,24 @@
 # Changelog
 
-## Unreleased — graph-core preview prepared 21 October 2026
+## Unreleased — complete core MVP, 21 October 2026
 
-This preview contains the implemented Days 1–4 and Day 6 capabilities, plus
-Day 7 documentation and demo preparation. The complete one-week MVP remains
-unfinished because Day 5 is pending. No release tag or package-registry
-publication is included.
+### Added
 
-### Available
+- Deterministic ready-task ranking: priority, due date, then task ID.
+- Evidence-aware Markdown daily briefs with task status, next actions,
+  blockers, critical path, and suggested follow-up drafts.
+- Optional prior-snapshot comparison, with explicit uncertainty when absent.
+- CLI `brief` command, `--date`, and `--previous` options.
+- Sample Markdown brief and six new test cases; all 32 tests pass.
 
-- JSON and fenced Markdown YAML input with source hashes and line provenance.
-- Graph contract validation, cycle diagnostics, and deterministic ordering.
-- Task readiness, blocker chains, and estimate-aware critical paths.
-- Local `validate` and `analyze` commands with documented exit codes.
-- Valid and invalid fictional fixtures, with 26 unit/integration tests.
-- Runnable in-memory dependency-completion demo.
+The earlier Days 1–4, 6, and 7 graph ingestion, validation, analysis, local CLI,
+documentation, and runnable-demo deliverables remain available.
+Day 5 is now implemented, completing the one-week file-based core MVP.
 
-### Pending
+### Remaining release and integration work
 
-- Day 5 daily-focus ranking and Markdown brief generation.
-- Change history and evidence-backed status transition tracking.
-- Live repository, Library, and messaging adapters.
-
-### Limits
-
-Critical paths include completed task estimates; missing estimates are reported.
-The current tool reads explicit task data; it does not infer tasks from prose or
-monitor work continuously. A repository license has not been added, so licensing
-must be resolved before presenting this as a reusable open-source release.
+A repository license decision is still required before an open-source release.
+No release tag or package-registry publication has been made.
+Live repository/Library/messaging adapters and model-based extraction are future
+integrations. Critical paths include completed estimates; evidence is not
+independently verified, and no messages or status changes are automated.
