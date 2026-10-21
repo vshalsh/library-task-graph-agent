@@ -37,7 +37,7 @@ equivalent; integration tests check both and verify source hashing.
 Day 6 adds the CLI and integration coverage for the existing Day 1–4 core.
 Day 5 ranking and Markdown daily-brief generation are absent from the current
 repository and remain pending. This CLI does not claim to generate daily briefs.
-Day 7 release polish has not been performed.
+Day 7 documentation and preview preparation are complete. See the [runnable demo](demo.md) and [release notes](../CHANGELOG.md). A full release remains pending Day 5 and a repository license decision.
 
 ## Verified results — 20 October 2026
 
@@ -52,3 +52,10 @@ The Day 6 implementation was verified with:
 
 Implementation: [Day 6 commit](https://github.com/vshalsh/library-task-graph-agent/commit/6d0a8702a6cfadb1a434dd85f4c9aabd7572233d).
 These are local verification results, not a GitHub Actions CI run.
+
+## Day 7 verification — 21 October 2026
+
+All 26 tests passed again. Editable package installation succeeded, and
+`python examples/demo.py` exited 0 using the installed package. It showed
+T-03 changing from blocked to ready after an in-memory T-02 completion.
+These checks ran locally; no CI run or public release tag is claimed.

@@ -1,6 +1,27 @@
 # Library Task Graph Agent
 
-Turn project notes into an evidence-aware, dependency-ordered plan for the day.
+Validate structured work notes and show task readiness, blockers, and critical paths.
+
+Current state: graph-core preview. Days 1–4, 6, and 7 are complete; Day 5
+daily ranking and Markdown brief generation remain pending.
+
+## Quick start
+
+Requires Python 3.10+. From the repository root, create and activate a virtual
+environment, then run:
+
+```sh
+python -m pip install -e .
+python examples/demo.py
+task-graph validate examples/sample-notes.md
+task-graph analyze examples/sample-task-graph.json
+python -m unittest discover -s tests -v
+```
+
+The [demo guide](docs/demo.md) explains the fictional blocker-to-ready transition.
+See [local setup](docs/local-workflow.md), [release notes](CHANGELOG.md), and
+[contribution guidance](CONTRIBUTING.md). A full MVP release is pending Day 5
+and a repository license decision.
 
 Traditional backlogs store tasks as rows. Real engineering work has dependencies, blockers, decisions, and artifacts spread across notes, docs, pull requests, and conversations. This project models those relationships as a directed acyclic graph (DAG) so it can show what is ready, what is blocked, and what should happen next.
 
@@ -83,7 +104,7 @@ Use `task-graph validate INPUT` or `task-graph analyze INPUT` after installing
 with `python -m pip install -e .`. See [local workflow](docs/local-workflow.md)
 for commands, exit codes, fixtures, and verification. Day 6 adds CLI integration
 tests and invalid-input samples. Day 5 ranking and Markdown brief generation
-are still pending in this repository; Day 7 release work has not started.
+are still pending in this repository. Day 7 preview documentation and the runnable demo are complete.
 
 ## Planned daily brief (Day 5 pending)
 
@@ -105,7 +126,7 @@ The daily brief is not implemented yet. When added, it should answer:
 | 4 | Calculate readiness, blockers, and critical path | Complete |
 | 5 | Rank daily focus and generate the Markdown brief | Pending |
 | 6 | Add tests, sample data, and a local CLI workflow | Complete |
-| 7 | Polish documentation, add a runnable demo, and prepare the public release | Awaiting approval |
+| 7 | Polish documentation, add a runnable demo, and prepare the public release | Complete: preview prepared |
 
 ## Principles
 
@@ -129,4 +150,4 @@ The daily brief is not implemented yet. When added, it should answer:
 
 **Day 6 complete:** Local validation and analysis CLI, two invalid-input fixtures, and seven CLI integration tests are available. All 26 tests passed on 20 October 2026; the installed `task-graph analyze` command also ran successfully. See [local workflow](docs/local-workflow.md).
 
-**Day 7 awaiting approval:** Release documentation, runnable demo, and release preparation remain scheduled work. The full one-week MVP is not yet complete.
+**Day 7 complete:** Quick start, contributor guidance, release notes, and a runnable in-memory demo are available. A graph-core preview is prepared; the full MVP release remains pending Day 5 and a repository license decision.
